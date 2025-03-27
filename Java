@@ -1,0 +1,25 @@
+import java.io.*;
+import java.nio.file.*;
+import java.security.*;
+import org.json.JSONObject;
+
+public class MD5Generator {
+    public static void main(String[] args) throws Exception {
+        String content = Files.readString(Path.of("input.json"));
+        JSONObject json = new JSONObject(content).getJSONObject("student");
+
+        String data = json.getString("first_name").toLowerCase() + json.getString("roll_number");
+        String hash = md5(data);
+
+        Files.writeString(Path.of("output.txt"), hash);
+        System.out.println("MD5 Hash saved to output.txt");
+    }
+
+    private static String md5(String input) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] bytes = md.digest(input.getBytes());
+        StringBuilder hex = new StringBuilder();
+        for (byte b : bytes) hex.append(String.format("%02x", b));
+        return hex.toString();
+    }
+}
